@@ -8,7 +8,7 @@ path = "images/*.jpeg"
 
 # Load base image and images list in grayscale
 base = cv2.imread("base.jpeg", 0)
-images = [cv2.imread(f,0) for f in glob.glob(path) if cv2.imread(f,0) is not None]
+images = [[f,cv2.imread(f,0)] for f in glob.glob(path) if cv2.imread(f,0) is not None]
 
 # Calculate percentage and return -> difference and difference percentage
 def calculate_percentage(base_image, current_image):
@@ -32,7 +32,7 @@ def calculate_percentage(base_image, current_image):
 
 # Use 'Calculate percentage' to evaluate what folder to put the images onto
 def sort_images_in_folders():
-    for image in images:
+    for path,image in images:
         diff_img, ch_per = calculate_percentage(base, image)
         print(f"Percentage of image changed: {ch_per:.2f}%")
         show_image_difference(base, diff_img, ch_per)
