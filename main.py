@@ -1,14 +1,22 @@
 import cv2
 import glob
+import shutil
+import os
 import matplotlib.pyplot as plt
 
 # Path to images folder
-path = "images/*.jpeg"
+path = "images/2026-10-22/*.jpg"
+
 
 
 # Load base image and images list in grayscale
 base = cv2.imread("base.jpeg", 0)
 images = [[f,cv2.imread(f,0)] for f in glob.glob(path) if cv2.imread(f,0) is not None]
+
+# Initialize folder structure
+def init_folders():
+    os.makedirs("single_box", exist_ok=True)
+    os.makedirs("not_single_box", exist_ok=True)
 
 # Calculate percentage and return -> difference and difference percentage
 def calculate_percentage(base_image, current_image):
@@ -36,6 +44,12 @@ def sort_images_in_folders():
         diff_img, ch_per = calculate_percentage(base, image)
         print(f"Percentage of image changed: {ch_per:.2f}%")
         show_image_difference(base, diff_img, ch_per)
+        if ch_per > 15:
+            shutil.move(path, 'not_single_box')
+            print('Moved to not single!')
+        else:
+            shutil.move(path, 'single_box')
+            print('Moved to single box!')
         
 #Show base + diff image, and use the change percentage as title
 def show_image_difference(base_image, difference_image, change_percentage):
@@ -45,7 +59,7 @@ def show_image_difference(base_image, difference_image, change_percentage):
     plt.close()
         
 
-
+init_folders()
 sort_images_in_folders()
         
         
