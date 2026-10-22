@@ -39,28 +39,42 @@ def calculate_percentage(base_image, current_image):
     return diff, percentage_change
 
 # Use 'Calculate percentage' to evaluate what folder to put the images onto
-def sort_images_in_folders():
+def sort_images_in_folders(single_treshold : float = 15, show_images : bool = False):
     for path,image in images:
         diff_img, ch_per = calculate_percentage(base, image)
         print(f"Percentage of image changed: {ch_per:.2f}%")
-        show_image_difference(base, diff_img, ch_per)
-        if ch_per > 15:
+        is_single = evaluate_percentage(ch_per, single_treshold)
+        if is_single:
             shutil.move(path, 'not_single_box')
             print('Moved to not single!')
         else:
             shutil.move(path, 'single_box')
             print('Moved to single box!')
         
+        if show_images:
+            show_image_difference(base, diff_img, ch_per, is_single)
+
+def save_single_box_images():
+    pass
+
+
+def evaluate_percentage(percentage, treshold):
+    if percentage > treshold:
+        return False
+    else:
+        return True
+    
+        
 #Show base + diff image, and use the change percentage as title
-def show_image_difference(base_image, difference_image, change_percentage):
-    plt.title(f'Change: %{change_percentage:.2f}')
+def show_image_difference(base_image, difference_image, change_percentage, is_single):
+    plt.title(f'Change: %{change_percentage:.2f}, Is Single Box: {is_single}')
     plt.imshow(base_image + difference_image)
     plt.show()
     plt.close()
         
 
 init_folders()
-sort_images_in_folders()
+sort_images_in_folders(15,True)
         
         
         
