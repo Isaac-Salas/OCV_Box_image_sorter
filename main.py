@@ -1,9 +1,11 @@
 import cv2
-import numpy as np
+import matplotlib.pyplot as plt
 
-# Load images and convert to grayscale
-base = cv2.imread("base.jpg", cv2.IMREAD_GRAYSCALE)
-current = cv2.imread("current.jpg", cv2.IMREAD_GRAYSCALE)
+
+
+# Load images as grayscale
+base = cv2.imread("base.jpeg", 0)
+current = cv2.imread("images/image (1).jpeg", 0)
 
 # Ensure images are the same size
 current = cv2.resize(current, (base.shape[1], base.shape[0]))
@@ -11,12 +13,23 @@ current = cv2.resize(current, (base.shape[1], base.shape[0]))
 # Calculate absolute difference
 diff = cv2.absdiff(base, current)
 
-# Threshold to get binary mask of differences
-_, thresh = cv2.threshold(diff, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
+# Threshold to remove noise (e.g., compression artifacts)
+# Pixels with difference > 25 become white (255), others black (0)
+_, mask = cv2.threshold(diff, 25, 255, cv2.THRESH_BINARY)
 
-# Find contours and draw bounding boxes
-contours, _ = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-for cnt in contours:
-    if cv2.contourArea(cnt) > 500:  # Filter small noise
-        x, y, w, h = cv2.boundingRect(cnt)
-        cv2.rectangle(current, (x, y), (x + w, y + h), (0, 255, 0), 2)   
+plt.imshow(base + diff)
+
+
+
+# Calculate percentage of changed pixels
+total_pixels = base.size  # width * height
+changed_pixels = cv2.countNonZero(mask)
+percentage_change = (changed_pixels / total_pixels) * 100
+
+if percentage_change > 30:
+    print('Not a single box!')
+    
+
+
+
+print(f"Percentage of image changed: {percentage_change:.2f}%")
