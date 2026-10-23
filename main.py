@@ -54,8 +54,19 @@ def sort_images_in_folders(single_treshold : float = 15, show_images : bool = Fa
         if show_images:
             show_image_difference(base, diff_img, ch_per, is_single)
 
-def save_single_box_images():
-    pass
+def save_single_box_images(single_treshold : float = 15, show_images : bool = False):
+    for path,image in images:
+        cropped_base = crop_image(base,470,1670,790,1990)
+        cropped_image = crop_image(image,470,1670,790,1990)
+        diff_img, ch_per = calculate_percentage(cropped_base, cropped_image)
+        is_single = evaluate_percentage(ch_per, single_treshold)
+        print(f"Percentage of image changed: {ch_per:.2f}%")
+        if show_images:
+            show_image_difference(cropped_base, diff_img, ch_per, is_single)
+        
+def crop_image(image, y_start, y_end, x_start, x_end):
+    cropped_img = image[y_start:y_end, x_start:x_end]
+    return cropped_img
 
 
 def evaluate_percentage(percentage, treshold):
@@ -73,8 +84,10 @@ def show_image_difference(base_image, difference_image, change_percentage, is_si
     plt.close()
         
 
-init_folders()
-sort_images_in_folders(15,True)
+#init_folders()
+#sort_images_in_folders(15,True)
+save_single_box_images(36, True)
+
         
         
         
