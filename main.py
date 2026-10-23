@@ -31,22 +31,25 @@ def calculate_percentage(base_image, current_image):
     return diff, percentage_change
 
 # Use 'Calculate percentage' to evaluate what folder to put the images in
-def sort_images_in_folders(single_treshold : float = 15, show_images : bool = False):
+def sort_images_in_folders(single_treshold : float = 15, show_images : bool = False, new_folder_name = '11/11/11'):
     for path,image in images:
         diff_img, ch_per = calculate_percentage(base, image)
         print(f"Percentage of image changed: {ch_per:.2f}%")
         is_single = evaluate_percentage(ch_per, single_treshold)
+        os.makedirs(f"single_box/{new_folder_name}", exist_ok=True)
+        os.makedirs(f"not_single_box/{new_folder_name}", exist_ok=True)
         if is_single:
-            shutil.move(path, 'not_single_box')
-            print('Moved to not single!')
-        else:
-            shutil.move(path, 'single_box')
+            shutil.move(path, f"single_box/{new_folder_name}")
             print('Moved to single box!')
+            
+        else:
+            shutil.move(path, f"not_single_box/{new_folder_name}")
+            print('Moved to not single!')
         
         if show_images:
             show_image_difference(base, diff_img, ch_per, is_single)
 
-def save_single_box_images(single_treshold : float = 15, show_images : bool = False,new_folder_name = '11/11/11'):
+def save_single_box_images(single_treshold : float = 15, show_images : bool = False, new_folder_name = '11/11/11'):
     image_count = 1
     for path,image in images:
         cropped_base = crop_image(base,crop_y_start,crop_y_end,crop_x_start,crop_x_end)
@@ -98,8 +101,8 @@ crop_y_start = 470
 crop_y_end = 1670
 
 init_folders()
-#sort_images_in_folders(15,True)
-save_single_box_images(44, False, '23/10/2026')
+sort_images_in_folders(44,False,'OG-23-10-2026')
+#save_single_box_images(44, False, '23/10/2026')
 
         
         
