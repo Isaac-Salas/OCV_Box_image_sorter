@@ -4,14 +4,6 @@ import shutil
 import os
 import matplotlib.pyplot as plt
 
-# Path to images folder
-path = "images/2026-10-22/*.jpg"
-
-
-
-# Load base image and images list in grayscale
-base = cv2.imread("base.jpeg", 0)
-images = [[f,cv2.imread(f,0)] for f in glob.glob(path) if cv2.imread(f,0) is not None]
 
 # Initialize folder structure
 def init_folders():
@@ -57,13 +49,13 @@ def sort_images_in_folders(single_treshold : float = 15, show_images : bool = Fa
 def save_single_box_images(single_treshold : float = 15, show_images : bool = False):
     image_count = 1
     for path,image in images:
-        cropped_base = crop_image(base,470,1670,790,1990)
-        cropped_image = crop_image(image,470,1670,790,1990)
+        cropped_base = crop_image(base,crop_y_start,crop_y_end,crop_x_start,crop_x_end)
+        cropped_image = crop_image(image,crop_y_start,crop_y_end,crop_x_start,crop_x_end)
+        color_image = crop_image(cv2.imread(path),crop_y_start,crop_y_end,crop_x_start,crop_x_end)
         diff_img, ch_per = calculate_percentage(cropped_base, cropped_image)
         is_single = evaluate_percentage(ch_per, single_treshold)
         print(f"Percentage of image changed: {ch_per:.2f}%")
         if is_single:
-            color_image = crop_image(cv2.imread(path),470,1670,790,1990)
             cv2.imwrite(f"single_box/box_{image_count}.jpg", color_image)
             image_count += 1
         if show_images:
@@ -88,7 +80,21 @@ def show_image_difference(base_image, difference_image, change_percentage, is_si
     plt.imshow(base_image + difference_image)
     plt.show()
     plt.close()
+
+
         
+# Path to images folder
+path = "images/2026-10-22/*.jpg"
+
+# Load base image and images list in grayscale
+base = cv2.imread("base.jpeg", 0)
+images = [[f,cv2.imread(f,0)] for f in glob.glob(path) if cv2.imread(f,0) is not None]
+
+# Global vars for image cropping
+crop_x_start = 790
+crop_x_end = 1990
+crop_y_start = 470
+crop_y_end = 1670
 
 #init_folders()
 #sort_images_in_folders(15,True)
