@@ -30,7 +30,7 @@ def calculate_percentage(base_image, current_image):
     
     return diff, percentage_change
 
-# Use 'Calculate percentage' to evaluate what folder to put the images onto
+# Use 'Calculate percentage' to evaluate what folder to put the images in
 def sort_images_in_folders(single_treshold : float = 15, show_images : bool = False):
     for path,image in images:
         diff_img, ch_per = calculate_percentage(base, image)
