@@ -91,7 +91,7 @@ def show_image_difference(base_image, difference_image, change_percentage, is_si
 path = "images/2026-10-23/*.jpg"
 
 # Load base image and images list in grayscale
-base = cv2.imread("base23.jpg", 0)
+base = cv2.imread("base.jpg", 0)
 images = [[f,cv2.imread(f,0)] for f in glob.glob(path) if cv2.imread(f,0) is not None]
 
 # Global vars for image cropping
@@ -101,8 +101,8 @@ crop_y_start = 470
 crop_y_end = 1670
 
 init_folders()
-sort_images_in_folders(44,False,'OG-23-10-2026')
-#save_single_box_images(44, False, '23/10/2026')
+#sort_images_in_folders(44,False,'OG-23-10-2026')
+save_single_box_images(44, False, '23/10/2026')
 
         
         
