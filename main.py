@@ -55,14 +55,20 @@ def sort_images_in_folders(single_treshold : float = 15, show_images : bool = Fa
             show_image_difference(base, diff_img, ch_per, is_single)
 
 def save_single_box_images(single_treshold : float = 15, show_images : bool = False):
+    image_count = 1
     for path,image in images:
         cropped_base = crop_image(base,470,1670,790,1990)
         cropped_image = crop_image(image,470,1670,790,1990)
         diff_img, ch_per = calculate_percentage(cropped_base, cropped_image)
         is_single = evaluate_percentage(ch_per, single_treshold)
         print(f"Percentage of image changed: {ch_per:.2f}%")
+        if is_single:
+            color_image = crop_image(cv2.imread(path),470,1670,790,1990)
+            cv2.imwrite(f"single_box/box_{image_count}.jpg", color_image)
+            image_count += 1
         if show_images:
             show_image_difference(cropped_base, diff_img, ch_per, is_single)
+        
         
 def crop_image(image, y_start, y_end, x_start, x_end):
     cropped_img = image[y_start:y_end, x_start:x_end]
